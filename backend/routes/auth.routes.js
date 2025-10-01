@@ -5,6 +5,6 @@ const route = Router();
 
 route.post("/signup", signUp);
 route.post("/login", login);
-route.get("/logout", logout);
+route.post("/logout", logout);
 
 export default route;
