@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  checkAuth,
   login,
   logout,
   signUp,
@@ -13,5 +14,6 @@ route.post("/signup", signUp);
 route.post("/login", login);
 route.post("/logout", logout);
 route.put("/update-profile", protectRoute, updateProfile);
+route.get("/check", protectRoute, checkAuth);
 
 export default route;

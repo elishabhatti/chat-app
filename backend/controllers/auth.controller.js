@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import { generateToken } from "../lib/utils.js";
 import { userModel } from "../models/user.models.js";
 import argon2 from "argon2";
@@ -39,6 +40,7 @@ export const signUp = async (req, res) => {
     }
   } catch (error) {
     console.error(`Error from signup controller: ${error}`);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -62,6 +64,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error(`Error from login controller ${error}`);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 export const logout = (req, res) => {
@@ -70,13 +73,38 @@ export const logout = (req, res) => {
     res.status(200).json({ message: "Logged out Successfully!" });
   } catch (error) {
     console.error(`Error from Logout Controller: ${error}`);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 export const updateProfile = async (req, res) => {
   try {
-    
+    const { profilePic } = req.body;
+    const userId = req.user._id;
+
+    if (!profilePic) {
+      return res.status(400).json({ message: "Profile Pic is required" });
+    }
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      {
+        profilePic: uploadResponse.secret_url,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedUser);
   } catch (error) {
-    
-  } 
-}
+    console.error(`Error from Update Profile Controller: ${error}`);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const checkAuth = async (req, res) => {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.error(`Error in check auth controller: ${error}`);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
