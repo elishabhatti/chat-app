@@ -48,13 +48,13 @@ export const login = async (req, res) => {
     const user = await userModel.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid Credentials!" });
 
-    const isPasswordCorrect = await argon2.verify(password, user.password);
+    const isPasswordCorrect = await argon2.verify(user.password, password);
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid Password" });
     }
 
     generateToken(user._id, res);
-    res.save(200).json({
+    res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
