@@ -32,6 +32,7 @@ export const signUp = async (req, res) => {
         _id: newUser._id,
         fullName: newUser.fullName,
         email: newUser.email,
+        profilePic: newUser.profilePic,
       });
     } else {
       res.status(400).json({ message: "Invalid User" });
@@ -41,8 +42,27 @@ export const signUp = async (req, res) => {
   }
 };
 
-export const login = (req, res) => {
-  res.send("login");
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid Credentials!" });
+
+    const isPasswordCorrect = await argon2.verify(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid Password" });
+    }
+
+    generateToken(user._id, res);
+    res.save(200).json({
+      _id: newUser._id,
+      fullName: newUser.fullName,
+      email: newUser.email,
+      profilePic: newUser.profilePic,
+    });
+  } catch (error) {
+    console.error(`Error from login controller ${error}`);
+  }
 };
 export const logout = (req, res) => {
   res.send("logout");
