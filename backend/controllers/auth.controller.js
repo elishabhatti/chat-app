@@ -1,8 +1,9 @@
+import { generateToken } from "../lib/utils.js";
 import { userModel } from "../models/user.models.js";
 import argon2 from "argon2";
 
 export const signUp = async (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password, profilePic } = req.body;
   try {
     if (password.length < 6) {
       return res
@@ -21,7 +22,16 @@ export const signUp = async (req, res) => {
     });
 
     if (newUser) {
-      return res.status(201).json({ message: newUser });
+      generateToken(newUser._id, res);
+      await newUser.save();
+
+      res.status(201).json({
+        _id: newUser._id,
+        fullName: newUser.fullName,
+        email: newUser.email,
+        password: newUser.password,
+        profilePic: newUser.profilePic,
+      });
     } else {
       res.status(400).json({ message: "Invalid User" });
     }
