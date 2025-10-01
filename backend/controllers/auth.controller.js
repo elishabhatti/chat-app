@@ -5,6 +5,9 @@ import argon2 from "argon2";
 export const signUp = async (req, res) => {
   const { fullName, email, password } = req.body;
   try {
+    if (!fullName || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     if (password.length < 6) {
       return res
         .status(400)
@@ -18,7 +21,7 @@ export const signUp = async (req, res) => {
     const newUser = await userModel.create({
       fullName,
       email,
-      hash,
+      password: hash,
     });
 
     if (newUser) {
@@ -29,7 +32,6 @@ export const signUp = async (req, res) => {
         _id: newUser._id,
         fullName: newUser.fullName,
         email: newUser.email,
-        password: newUser.password,
       });
     } else {
       res.status(400).json({ message: "Invalid User" });
