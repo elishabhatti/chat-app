@@ -1,36 +1,20 @@
 import { useChatStore } from "../store/useChatStore";
 import { useEffect, useRef } from "react";
-
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeleton/MessageSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
-// import { formatMessageTime } from "../lib/utils";
+import { formatMessageTime } from "../lib/utils";
 
 const ChatContainer = () => {
-  const {
-    messages,
-    getMessages,
-    isMessagesLoading,
-    selectedUser,
-    subscribeToMessages,
-    unsubscribeFromMessages,
-  } = useChatStore();
+  const { messages, getMessages, isMessagesLoading, selectedUser } =
+    useChatStore();
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
   useEffect(() => {
     getMessages(selectedUser._id);
-
-    subscribeToMessages();
-
-    return () => unsubscribeFromMessages();
-  }, [
-    selectedUser._id,
-    getMessages,
-    subscribeToMessages,
-    unsubscribeFromMessages,
-  ]);
+  }, [selectedUser._id, getMessages]);
 
   useEffect(() => {
     if (messageEndRef.current && messages) {
@@ -74,9 +58,9 @@ const ChatContainer = () => {
               </div>
             </div>
             <div className="chat-header mb-1">
-              {/* <time className="text-xs opacity-50 ml-1">
+              <time className="text-xs opacity-50 ml-1">
                 {formatMessageTime(message.createdAt)}
-              </time> */}
+              </time>
             </div>
             <div className="chat-bubble flex flex-col">
               {message.image && (
