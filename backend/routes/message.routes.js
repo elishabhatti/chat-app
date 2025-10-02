@@ -4,7 +4,7 @@ import { getUserForSideBar, getMessages, sendMessage } from "../controllers/mess
 
 const route = Router();
 
-route.get("/user", protectRoute, getUserForSideBar);
+route.get("/users", protectRoute, getUserForSideBar);
 route.get("/:id", protectRoute, getMessages);
 route.post("/send/:id", protectRoute, sendMessage);
 
