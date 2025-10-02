@@ -10,7 +10,7 @@ const Sidebar = () => {
     selectedUser,
     setSelectedUser,
     isUsersLoading,
-    onlineUsers, // ✅ now coming from store
+    onlineUsers, 
   } = useChatStore();
 
   useEffect(() => {
