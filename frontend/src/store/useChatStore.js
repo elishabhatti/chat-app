@@ -52,8 +52,8 @@ export const useChatStore = create((set, get) => ({
     if (!selectedUser) return;
 
     const socket = useAuthStore.getState().socket;
-    socket.on("nesMessage", (newMessage) => {
-      set({ messages: [...get().message, newMessage] });
+    socket.on("newMessage", (newMessage) => {
+      set({ messages: [...get().messages, newMessage] });
     });
   },
 
