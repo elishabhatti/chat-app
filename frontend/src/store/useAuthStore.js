@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 
 const BASE_URL = "http://localhost:5001";
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
   authUser: null,
   isSigninUp: false,
   isLogginIng: false,
@@ -90,8 +90,11 @@ export const useAuthStore = create((set) => ({
       },
     });
     socket.connect();
-
     set({ socket: socket });
+
+    socket.on("getOnlineUsers", (userIds) => {
+      set({ onlineUsers: userIds });
+    });
   },
   disconnectSocket: async () => {
     if (get().socket?.connected) get().socket.disconnect();
